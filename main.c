@@ -31,7 +31,7 @@ void parse_input(char *input, char **args) {
     args[i] = NULL;
 }
 
-char* getCWD() {
+char* getCWD() { // current working directory
     char *cwd = malloc(1024);
 
     if (cwd == NULL) {
@@ -52,10 +52,9 @@ int main() {
     char input[INPUT_SIZE];
     char *args[100];
     char user[100] = "defaultusr";
+    char *cwd = getCWD();
 
     while (1) {
-        char *cwd = getCWD();  // current working directory
-
         if (cwd != NULL) {
             printf("[cShell-%s] %s $> ", user, cwd);
         } else {
@@ -66,7 +65,7 @@ int main() {
             break;
         }
 
-        input[strcspn(input, "\n")] = '\0';  // Remove trailing newline
+        input[strcspn(input, "\n")] = '\0';
 
         // built in command checks
         if (strcmp("exit", input) == 0) {
@@ -81,7 +80,7 @@ int main() {
 
         parse_input(input, args);
 
-        // Handle 'cd' built-in command
+        // handle 'cd' command
         if (strcmp("cd", args[0]) == 0) {
             if (args[1] == NULL) {
                 fprintf(stderr, "Missing argument for command \"cd\"\n");
@@ -89,13 +88,13 @@ int main() {
                 if (chdir(args[1]) != 0) {
                     perror("chdir failed");
                 }
+                char *cwd = getCWD();
             }
             continue;
         }
-
-        // If not a built-in command, execute the external command
+        // execute the external command
         execute(args);
     }
-
+    free(cwd);
     return 0;
 }
