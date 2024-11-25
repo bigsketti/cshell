@@ -3,10 +3,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
 #define INPUT_SIZE 1024
-
-const double VERSION = 0.1;
+#define VERSION 0.1f
 
 void execute(char **args) {
     pid_t pid = fork();
@@ -67,31 +67,67 @@ int main() {
 
         input[strcspn(input, "\n")] = '\0';
 
+        parse_input(input, args);
+
         // built in command checks
+
+        //  TODO: add commands to handle creating and deleting users
+        //  also modify permissions for admin users and regular users
+        //  This will have to come after i finish the JSON parser
+
+        //  TODO: add mkdir, rmdir, mkfile, and rmfile commands built in
+
         if (strcmp("exit", input) == 0) {
             exit(0);
+
         } else if (strcmp("help", input) == 0) {
-            printf("Welcome to cShell, my simple terminal written in C\nBuilt-in commands:\n\texit\n\thelp\n\tcd\n\tversion\n");
+            printf("Welcome to cShell, my simple terminal written in C\nBuilt-in commands:\n\texit\n\thelp\n\tcd [dir name]\n\tversion\n\tmkdir [dir name]\n\trmdir [dir name]\n\tmkfile [file name]\n\trmfile [file name]\n\n");
             continue;
+
         } else if (strcmp("version", input) == 0) {
             printf("cShell version: %f\n", VERSION);
             continue;
-        }
 
-        parse_input(input, args);
-
-        // handle 'cd' command
-        if (strcmp("cd", args[0]) == 0) {
+        } else if (strcmp("cd", args[0]) == 0) {
             if (args[1] == NULL) {
                 fprintf(stderr, "Missing argument for command \"cd\"\n");
             } else {
                 if (chdir(args[1]) != 0) {
-                    perror("chdir failed");
+                    perror("chdir failed\n");
+                } else {
+                    free(cwd);
+                    cwd = getCWD();
                 }
-                char *cwd = getCWD();
             }
             continue;
+
+        } else if (strcmp("mkfile", args[0]) == 0) {
+            FILE *file = fopen(args[1], "w");
+            if (file == NULL) {
+                perror("Error making file");
+            } else { printf("success\n"); }
+            continue;
+
+        } else if (strcmp("mkdir", args[0]) == 0) {
+            if (mkdir(args[1], 0777) != 0) {
+                perror("Error making directory");
+            } else { printf("success\n"); }
+            continue;
+
+        } else if (strcmp("rmfile", args[0]) == 0) {
+            if (remove(args[1]) != 0) {
+                perror("Error removing file");
+            } else { printf("success\n"); }
+            continue;
+
+        } else if (strcmp("rmdir", args[0]) == 0) {
+            if (rmdir(args[1]) != 0) {
+                perror("Error removing directory");
+            } else { printf("success\n"); }
+            continue;
         }
+
+
         // execute the external command
         execute(args);
     }
