@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-enum TokenType {
+typedef enum TokenType {
     INTEGER,
     CHAR,
     TRUE,
@@ -19,12 +19,12 @@ enum TokenType {
     DOUBLE_QUOTES,
     COMMA,
     END_OF_FILE,
-};
+} Token_type;
 
-struct Token {
+typedef struct Token {
     enum TokenType type;
     char value[100];
-};
+} Token;
 
 void advancePosition(int *pos, char *currentChar, char *input[]) {
     if(pos < sizeof(input)) {

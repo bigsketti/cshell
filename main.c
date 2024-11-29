@@ -8,6 +8,18 @@
 #define INPUT_SIZE 1024
 #define VERSION 0.1f
 
+char *trimCWD(char *cwd) {
+    char *token = strtok(cwd, "/");
+    char *trimmedCWD = NULL;
+
+    while (token != NULL) {
+        trimmedCWD = token;
+        token = strtok(NULL, "/");
+    }
+
+    return trimmedCWD;
+}
+
 void execute(char **args) {
     pid_t pid = fork();
     if (pid == 0) {
@@ -53,10 +65,11 @@ int main() {
     char *args[100];
     char user[100] = "defaultusr";
     char *cwd = getCWD();
+    char *trimmedCWD = trimCWD(cwd);
 
     while (1) {
         if (cwd != NULL) {
-            printf("[cShell-%s] %s $> ", user, cwd);
+            printf("[cShell-%s] /%s $> ", user, trimmedCWD);
         } else {
             printf("[cShell-%s] $> ", user);
         }
@@ -75,16 +88,16 @@ int main() {
         //  also modify permissions for admin users and regular users
         //  This will have to come after i finish the JSON parser
 
-        //  TODO: add mkdir, rmdir, mkfile, and rmfile commands built in
-
-        if (strcmp("exit", input) == 0) {
+        //  TODO: refactor this to a switch case one day im bored
+        //  these else ifs are getting ugly and its just gonna get worse
+        if (strcmp("exit", args[0]) == 0) {
             exit(0);
 
-        } else if (strcmp("help", input) == 0) {
+        } else if (strcmp("help", args[0]) == 0) {
             printf("Welcome to cShell, my simple terminal written in C\nBuilt-in commands:\n\texit\n\thelp\n\tcd [dir name]\n\tversion\n\tmkdir [dir name]\n\trmdir [dir name]\n\tmkfile [file name]\n\trmfile [file name]\n\n");
             continue;
 
-        } else if (strcmp("version", input) == 0) {
+        } else if (strcmp("version", args[0]) == 0) {
             printf("cShell version: %f\n", VERSION);
             continue;
 
@@ -97,6 +110,7 @@ int main() {
                 } else {
                     free(cwd);
                     cwd = getCWD();
+                    trimmedCWD = trimCWD(cwd);
                 }
             }
             continue;
@@ -125,8 +139,10 @@ int main() {
                 perror("Error removing directory");
             } else { printf("success\n"); }
             continue;
-        }
+        } else if (strcmp("ls", args[0])) {
+            //  TODO: finish this hoe
 
+        }
 
         // execute the external command
         execute(args);
