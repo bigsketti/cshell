@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
 #define INPUT_SIZE 1024
 #define VERSION 0.1f
@@ -60,6 +62,26 @@ char* getCWD() { // current working directory
     }
 }
 
+void listDirectorys(const char *path) {
+    struct dirent *entry;
+    DIR *dp = opendir(path);
+
+    if (dp == NULL) {
+        perror("Directory read failed");
+        return;
+    }
+
+    while ((entry = readdir(dp))) {
+        //  skips hidden entries
+        if (entry->d_name[0] == '.') {
+            continue;
+        }
+        printf("%s\n", entry->d_name);
+    }
+
+    closedir(dp);
+ }
+
 int main() {
     char input[INPUT_SIZE];
     char *args[100];
@@ -82,7 +104,7 @@ int main() {
 
         parse_input(input, args);
 
-        // built in command checks
+        //  built in command checks
 
         //  TODO: add commands to handle creating and deleting users
         //  also modify permissions for admin users and regular users
@@ -94,7 +116,7 @@ int main() {
             exit(0);
 
         } else if (strcmp("help", args[0]) == 0) {
-            printf("Welcome to cShell, my simple terminal written in C\nBuilt-in commands:\n\texit\n\thelp\n\tcd [dir name]\n\tversion\n\tmkdir [dir name]\n\trmdir [dir name]\n\tmkfile [file name]\n\trmfile [file name]\n\n");
+            printf("Welcome to cShell, my simple terminal written in C\nBuilt-in commands:\n\texit\n\thelp\n\tcd [dir name]\n\tversion\n\tmkdir [dir name]\n\trmdir [dir name]\n\tmkfile [file name]\n\trmfile [file name]\n\tls [path optional]\n\n");
             continue;
 
         } else if (strcmp("version", args[0]) == 0) {
@@ -139,9 +161,12 @@ int main() {
                 perror("Error removing directory");
             } else { printf("success\n"); }
             continue;
-        } else if (strcmp("ls", args[0])) {
-            //  TODO: finish this hoe
 
+        } else if (strcmp("ls", args[0]) == 0) {
+            const char *path = args[1] ? args[1] : ".";
+            listDirectorys(path);
+            continue;
+            
         }
 
         // execute the external command

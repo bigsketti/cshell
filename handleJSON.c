@@ -43,5 +43,7 @@ void skipWhiteSpace(int *pos, char currentChar) {
 }
 
 void tokenizeJSON() {
-
+    //  TODO: finish this after token type functions
 }
+
+//  TODO: make functions to handle types of tokens
