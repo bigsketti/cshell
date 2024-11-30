@@ -26,20 +26,42 @@ typedef struct Token {
     char value[100];
 } Token;
 
-void advancePosition(int *pos, char *currentChar, char *input[]) {
-    if(pos < sizeof(input)) {
-        currentChar = input[*pos];
-        printf("Advancing to %s at position %s", currentChar, *pos);
+void advancePosition(int *pos, char **currentChar, char *input[]) {
+    (*pos++);
+    if(*pos < sizeof(input)) {
+        *currentChar = &input[*pos];
+        printf("Advancing to %s at position %s", **currentChar, *pos);
     } else {
-        currentChar = "\0";
+        *currentChar = "\0";
         printf("End of Input");
     }
 }
 
-void skipWhiteSpace(int *pos, char currentChar) {
-    if (currentChar != "\0" && is_space(currentChar) == true) {
-        pos++;
+void skipWhiteSpace(int *pos, char **currentChar, char *input) {
+    if (**currentChar != "\0" && is_space(**currentChar)) {
+        advancePosition(pos, currentChar, input);
     }
+}
+
+Token number(int *pos, char **currentChar, char *input) {
+    char value[100] = "";
+    int i = 0;
+
+    while (**currentChar != '\0' && isdigit(**currentChar)) {
+        if (i < sizeof(value) -1) {
+            value[i++] = **currentChar;
+        }
+        advancePosition(pos, currentChar, input);
+    }
+    value[i] = '\0';
+
+    Token token;
+    token.type = INTEGER;
+    strcpy(token.value, value, sizeof(value) - 1);
+    token.value[sizeof(token.value) -1] = '\0';
+
+    return token;
+
 }
 
 void tokenizeJSON() {
