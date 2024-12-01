@@ -82,6 +82,22 @@ void listDirectorys(const char *path) {
     closedir(dp);
  }
 
+ void printClamShell() {
+    printf("        ████    ██████      \n");
+    printf("    ████░░░░████░░░░░░██    \n");
+    printf("  ██░░░░░░░░░░░░██░░░░░░██  \n");
+    printf("  ██░░░░░░▒▒▒▒░░░░░░░░░░▒▒██\n");
+    printf("██░░░░░░▒▒░░░░░░░░░░░░██▒▒██\n");
+    printf("██░░░░▒▒░░░░░░░░░░░░░░░░██  \n");
+    printf("██░░▒▒░░░░░░░░░░░░▒▒░░░░░░██\n");
+    printf("██░░▒▒░░░░░░░░░░░░▒▒░░░░░░██\n");
+    printf("  ██░░░░░░░░░░░░▒▒░░░░░░▒▒██\n");
+    printf("  ██░░░░░░░░░░▒▒░░░░░░░░██  \n");
+    printf("    ██░░░░▒▒▒▒░░░░░░░░▒▒██  \n");
+    printf("      ████░░░░░░▒▒▒▒████    \n");
+    printf("          ██████████         \n");
+}
+
 int main() {
     char input[INPUT_SIZE];
     char *args[100];
@@ -116,7 +132,9 @@ int main() {
             exit(0);
 
         } else if (strcmp("help", args[0]) == 0) {
-            printf("Welcome to cShell, my simple terminal written in C\nBuilt-in commands:\n\texit\n\thelp\n\tcd [dir name]\n\tversion\n\tmkdir [dir name]\n\trmdir [dir name]\n\tmkfile [file name]\n\trmfile [file name]\n\tls [path optional]\n\n");
+            printf("Welcome to cShell, my shitty terminal written in C\n\n");
+            printClamShell();
+            printf("\nBuilt-in commands:\n\texit\n\thelp\n\tcd [dir name]\n\tversion\n\tmkdir [dir name]\n\trmdir [dir name]\n\tmkfile [file name]\n\trmfile [file name]\n\tls [path optional]\n\n");
             continue;
 
         } else if (strcmp("version", args[0]) == 0) {
