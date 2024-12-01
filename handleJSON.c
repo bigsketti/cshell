@@ -48,7 +48,7 @@ Token number(int *pos, char **currentChar, char *input) {
     int i = 0;
 
     while (**currentChar != '\0' && isdigit(**currentChar)) {
-        if (i < sizeof(value) -1) {
+        if (i < sizeof(value) - 1) {
             value[i++] = **currentChar;
         }
         advancePosition(pos, currentChar, input);
@@ -58,14 +58,35 @@ Token number(int *pos, char **currentChar, char *input) {
     Token token;
     token.type = INTEGER;
     strcpy(token.value, value, sizeof(value) - 1);
-    token.value[sizeof(token.value) -1] = '\0';
+    token.value[sizeof(token.value) - 1] = '\0';
 
     return token;
 
 }
 
-void tokenizeJSON() {
+Token identifier(int *pos, char **currentChar, char *input) {
+    char value[100] = "";
+    int i = 0;
+
+    while (**currentChar != '\0' && isalnum(**currentChar)) {
+        if (i < sizeof(value) - 1) {
+            value[i++] = **currentChar;
+        }
+        advancePosition(pos,currentChar, input);
+    }
+    value[i] = '\0';
+
+    Token token;
+    token.type = IDENTIFIER;
+    strcpy(token.value, value, sizeof(value) - 1);
+    token.value[sizeof(token.value) - 1] = '\0';
+
+    return token;
+}
+
+void tokenizeJSON(char *input) {
     //  TODO: finish this after token type functions
+    
 }
 
 //  TODO: make functions to handle types of tokens
