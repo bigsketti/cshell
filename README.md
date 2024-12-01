@@ -3,4 +3,4 @@ This will never reach the level of bash or zsh, I'm a college student without th
 
 THIS ONLY WORKS ON LINUX, IF FOR WHATEVER REASON YOU WANT TO PLAY WITH THIS AND YOURE ON WINDOWS YOU MUST USE WSL (Windows subsystem for Linux)
 
-No need to compile the source code to run, simply download the binary from the repository. It always contains the most recent version of cShell.
+No need to compile the source code to run, simply download the binary from the repository. It always contains the most recently compiled version of cShell.
