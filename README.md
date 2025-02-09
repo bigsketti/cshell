@@ -14,6 +14,8 @@ This cutting-edge shell for Linux includes powerful features such as:
 
 **cShell** is actively being developed at a **very slow** pace. College and work take up a lot of time, and this project is just my way of dipping my toes into **C** and learning about shells and **syscalls**.
 
+To run **cShell** just download the binary, simple as that, the latest compiled binary is always included in each commit.
+
 While **cShell** is clearly **better** than other shells like **Bash** or **ZShell**, it's not quite as feature-rich. I wouldn’t recommend replacing your current shell program with it—unless, of course, you hate yourself. In that case, I am not liable for any damage to your psyche incurred during the use of this program. 
 
 ---
