@@ -37,13 +37,13 @@ void advancePosition(int *pos, char **currentChar, char *input[]) {
     }
 }
 
-void skipWhiteSpace(int *pos, char **currentChar, char *input) {
+void skipWhiteSpace(int *pos, char **currentChar, char *input[]) {
     if (**currentChar != "\0" && is_space(**currentChar)) {
         advancePosition(pos, currentChar, input);
     }
 }
 
-Token number(int *pos, char **currentChar, char *input) {
+Token number(int *pos, char **currentChar, char *input[]) {
     char value[100] = "";
     int i = 0;
 
@@ -64,7 +64,7 @@ Token number(int *pos, char **currentChar, char *input) {
 
 }
 
-Token identifier(int *pos, char **currentChar, char *input) {
+Token identifier(int *pos, char **currentChar, char *input[]) {
     char value[100] = "";
     int i = 0;
 
@@ -84,9 +84,17 @@ Token identifier(int *pos, char **currentChar, char *input) {
     return token;
 }
 
-void tokenizeJSON(char *input) {
+void tokenizeJSON(int *pos, char **currentChar, char *input[]) {
     //  TODO: finish this after token type functions
+    while (currentChar != '\0') {
+        if (isspace(currentChar)) {
+            skipWhiteSpace(pos, currentChar, input);
+        }
+
+        if (isdigit(currentChar)) {
+            return number(pos, currentChar, input);
+        }
+    }
     
 }
 
-//  TODO: make functions to handle types of tokens

@@ -10,6 +10,8 @@
 #define INPUT_SIZE 1024
 #define VERSION 0.1f
 
+//  TODO: research tab completion, very big quality of life feature
+
 char *trimCWD(char *cwd) {
     char *token = strtok(cwd, "/");
     char *trimmedCWD = NULL;
@@ -98,6 +100,123 @@ void listDirectorys(const char *path) {
     printf("          ██████████         \n");
 }
 
+void handle_command(char **args, char **cwd, char **trimmedCWD) {
+    if (args[0] == NULL) {
+        return;
+    }
+
+    if (strcmp("exit", args[0]) == 0) {
+        exit(0);
+    }
+
+    if (strcmp("help", args[0]) == 0) {
+        printf("Welcome to cShell, my shitty terminal written in C\n\n");
+        printClamShell();
+        printf(
+            "\nBuilt-in commands:\n"
+            "\texit\n"
+            "\thelp\n"
+            "\tversion\n"
+            "\tcd <dir name>\n"
+            "\tmkdir <dir name>\n"
+            "\trmdir <dir name>\n"
+            "\tmkfile <file name>\n"
+            "\trmfile <file name>\n"
+            "\tls <optional: path>\n" 
+            "\tmode <-arg>\n"
+            "\t\tnormal mode: -n\n"
+            "\t\tevil mode: -e\n"
+            "\t\thacker mode: -h\n\n"
+        );
+        return;
+    }
+
+    if (strcmp("version", args[0]) == 0) {
+        printf("cShell version: %f\n", VERSION);
+        return;
+    }
+
+    if (strcmp("cd", args[0]) == 0) {
+        if (args[1] == NULL) {
+            fprintf(stderr, "Missing argument for command \"cd\"\n");
+        } else {
+            if (chdir(args[1]) != 0) {
+                perror("chdir failed\n");
+            } else {
+                free(*cwd);
+                *cwd = getCWD();
+                *trimmedCWD = trimCWD(*cwd);
+            }
+        }
+        return;
+    }
+
+    if (strcmp("mkfile", args[0]) == 0) {
+        FILE *file = fopen(args[1], "w");
+        if (file == NULL) {
+            perror("Error making file");
+        } else {
+            printf("success\n");
+        }
+        return;
+    }
+
+    if (strcmp("mkdir", args[0]) == 0) {
+        if (mkdir(args[1], 0777) != 0) {
+            perror("Error making directory");
+        } else {
+            printf("success\n");
+        }
+        return;
+    }
+
+    if (strcmp("rmfile", args[0]) == 0) {
+        if (remove(args[1]) != 0) {
+            perror("Error removing file");
+        } else {
+            printf("success\n");
+        }
+        return;
+    }
+
+    if (strcmp("rmdir", args[0]) == 0) {
+        if (rmdir(args[1]) != 0) {
+            perror("Error removing directory");
+        } else {
+            printf("success\n");
+        }
+        return;
+    }
+
+    if (strcmp("ls", args[0]) == 0) {
+        const char *path = args[1] ? args[1] : ".";
+        listDirectorys(path);
+        return;
+    }
+
+    if (strcmp("mode", args[0]) == 0) {
+        if (strcmp("-h", args[1]) == 0) {
+            printf("\033[32m");
+            printf("Hacker mode activated\n");
+            return;
+        } else if (strcmp("-e", args[1]) == 0) {
+            printf("\033[31m");
+            printf("Evil mode activated\n");
+            return;
+        } else if (strcmp("-n", args[1]) == 0) {
+            printf("\033[0m");
+            printf("Normal mode activated\n");
+            return;
+        } else {
+            printf("Invalid arguement, type \"help\" for help\n");
+            return;
+        }
+    }
+
+    // execute the external command
+    execute(args);
+}
+
 int main() {
     char input[INPUT_SIZE];
     char *args[100];
@@ -120,75 +239,7 @@ int main() {
 
         parse_input(input, args);
 
-        //  built in command checks
-
-        //  TODO: add commands to handle creating and deleting users
-        //  also modify permissions for admin users and regular users
-        //  This will have to come after i finish the JSON parser
-
-        //  TODO: refactor this to a switch case one day im bored
-        //  these else ifs are getting ugly and its just gonna get worse
-        if (strcmp("exit", args[0]) == 0) {
-            exit(0);
-
-        } else if (strcmp("help", args[0]) == 0) {
-            printf("Welcome to cShell, my shitty terminal written in C\n\n");
-            printClamShell();
-            printf("\nBuilt-in commands:\n\texit\n\thelp\n\tcd [dir name]\n\tversion\n\tmkdir [dir name]\n\trmdir [dir name]\n\tmkfile [file name]\n\trmfile [file name]\n\tls [path optional]\n\n");
-            continue;
-
-        } else if (strcmp("version", args[0]) == 0) {
-            printf("cShell version: %f\n", VERSION);
-            continue;
-
-        } else if (strcmp("cd", args[0]) == 0) {
-            if (args[1] == NULL) {
-                fprintf(stderr, "Missing argument for command \"cd\"\n");
-            } else {
-                if (chdir(args[1]) != 0) {
-                    perror("chdir failed\n");
-                } else {
-                    free(cwd);
-                    cwd = getCWD();
-                    trimmedCWD = trimCWD(cwd);
-                }
-            }
-            continue;
-
-        } else if (strcmp("mkfile", args[0]) == 0) {
-            FILE *file = fopen(args[1], "w");
-            if (file == NULL) {
-                perror("Error making file");
-            } else { printf("success\n"); }
-            continue;
-
-        } else if (strcmp("mkdir", args[0]) == 0) {
-            if (mkdir(args[1], 0777) != 0) {
-                perror("Error making directory");
-            } else { printf("success\n"); }
-            continue;
-
-        } else if (strcmp("rmfile", args[0]) == 0) {
-            if (remove(args[1]) != 0) {
-                perror("Error removing file");
-            } else { printf("success\n"); }
-            continue;
-
-        } else if (strcmp("rmdir", args[0]) == 0) {
-            if (rmdir(args[1]) != 0) {
-                perror("Error removing directory");
-            } else { printf("success\n"); }
-            continue;
-
-        } else if (strcmp("ls", args[0]) == 0) {
-            const char *path = args[1] ? args[1] : ".";
-            listDirectorys(path);
-            continue;
-            
-        }
-
-        // execute the external command
-        execute(args);
+        handle_command(args, &cwd, &trimmedCWD);
     }
     free(cwd);
     return 0;

@@ -1,6 +1,19 @@
-This is a basic terminal written in plain ol' C. I'm writing this to dip my toes into C and learn a little about systems development.
-This will never reach the level of bash or zsh, I'm a college student without that kind of time or knowledge.
+# Welcome to cShell
 
-THIS ONLY WORKS ON LINUX, IF FOR WHATEVER REASON YOU WANT TO PLAY WITH THIS AND YOURE ON WINDOWS YOU MUST USE WSL (Windows subsystem for Linux)
+**cShell** is a compact terminal written in **C**.
 
-No need to compile the source code to run, simply download the binary from the repository. It always contains the most recently compiled version of cShell.
+This cutting-edge shell for Linux includes powerful features such as:
+
+- Native ASCII clam
+- Easy navigation, creation, and deletion of files and directories
+- **Hacker mode**
+- **Evil mode**
+- And so much more…
+
+---
+
+**cShell** is actively being developed at a **very slow** pace. College and work take up a lot of time, and this project is just my way of dipping my toes into **C** and learning about shells and **syscalls**.
+
+While **cShell** is clearly **better** than other shells like **Bash** or **ZShell**, it's not quite as feature-rich. I wouldn’t recommend replacing your current shell program with it—unless, of course, you *really* hate yourself. In that case, I am not liable for any damage to your psyche incurred during the use of this program. 
+
+---
