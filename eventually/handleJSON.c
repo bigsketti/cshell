@@ -1,4 +1,7 @@
-//  This file exists because I hate myself too much to use cJSON
+//  I was gonna make a json parser from scratch but ive
+//  had my fill of writing lexers/parsers lately,
+//  might finish it eventually but for now itll be
+//  basic config files
 
 #include <stdio.h>
 #include <stdlib.h>
