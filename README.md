@@ -12,7 +12,7 @@ This cutting-edge shell for Linux includes powerful features such as:
 
 ---
 
-**cShell** is actively being developed at a **very slow** pace. College and work take up a lot of time, and this project is just my way of dipping my toes into **C** and learning about shells and **syscalls**.
+**cShell** is actively being developed at a **very slow** pace. College and work take up a lot of time, and this project is just my way of dipping my toes into **C** and learning about shells and syscalls. I'm using no libraries, everything is being implimented from scratch.
 
 To run **cShell** just download the binary, simple as that, the latest compiled binary is always included in each commit.
 
