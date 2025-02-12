@@ -1,7 +1,5 @@
 #include "cShell.h"
 
-//  TODO: research tab completion
-
 //  command prototypes so handleCommand() works
 //  built in commands are prefixed with "cmd_"
 void cmd_exit();
@@ -21,45 +19,38 @@ void parseInput(char *input, char **args);
 char* getCWD();
 void listDirectorys(const char *path);
 
+typedef struct {
+    char *name;
+    void (*func)(char **, char **, char **); 
+} Command;
+
+Command commands[] = {
+    {"exit", (void *)cmd_exit},
+    {"help", (void *)cmd_help},
+    {"version", (void *)cmd_version},
+    {"cd", (void *)cmd_cd},
+    {"mkfile", (void *)cmd_mkfile},
+    {"mkdir", (void *)cmd_mkdir},
+    {"rmfile", (void *)cmd_rmfile},
+    {"rmdir", (void *)cmd_rmdir},
+    {"ls", (void *)cmd_ls},
+    {"mode", (void *)cmd_mode},
+    {"clamgen", (void *)printClamShell},
+    {NULL, NULL}
+};
+
 void handleCommand(char **args, char **cwd, char **trimmedCWD) {
     if (args[0] == NULL) {
         return;
     }
-    
-    if (strcmp("exit", args[0]) == 0) {
-        cmd_exit();
-    } else if (strcmp("help", args[0]) == 0) {
-        cmd_help();
-        return;
-    } else if (strcmp("version", args[0]) == 0) {
-        cmd_version();
-        return;
-    } else if (strcmp("cd", args[0]) == 0) {
-        cmd_cd(args, cwd, trimmedCWD);
-        return;
-    } else if (strcmp("mkfile", args[0]) == 0) {
-        cmd_mkfile(args);
-        return;
-    } else if (strcmp("mkdir", args[0]) == 0) {
-        cmd_mkdir(args);
-        return;
-    } else if (strcmp("rmfile", args[0]) == 0) {
-        cmd_rmfile(args);
-        return;
-    } else if (strcmp("rmdir", args[0]) == 0) {
-        
-        return;
-    } else if (strcmp("ls", args[0]) == 0) {
-        cmd_ls(args);
-        return;
-    } else if (strcmp("mode", args[0]) == 0) {
-        cmd_mode(args);
-    } else if (strcmp("generate_clam", args[0]) == 0) {
-        printClamShell();
-        return;
-    } else {
-        execute(args);
+
+    for (int i = 0; commands[i].name != NULL; i++) {
+        if (strcmp(args[0], commands[i].name) == 0) {
+            commands[i].func(args, cwd, trimmedCWD);
+            return;
+        }
     }
+    execute(args);
 }
 
 void cmd_help() {
@@ -70,7 +61,7 @@ void cmd_help() {
         "\texit\n"
         "\thelp\n"
         "\tversion\n"
-        "\tgenerate_clam\n"
+        "\tclamgen\n"
         "\tcd <dir name>\n"
         "\tmkdir <dir name>\n"
         "\trmdir <dir name>\n"
@@ -180,15 +171,8 @@ void printClamShell() {
 }
 
 char *trimCWD(char *cwd) {
-    char *token = strtok(cwd, "/");
-    char *trimmedCWD = NULL;
-
-    while (token != NULL) {
-        trimmedCWD = token;
-        token = strtok(NULL, "/");
-    }
-
-    return trimmedCWD;
+    char *lastSlash = strrchr(cwd, '/');
+    return lastSlash ? lastSlash + 1 : (char *)cwd;
 }
 
 void execute(char **args) {
