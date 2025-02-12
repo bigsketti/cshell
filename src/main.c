@@ -22,6 +22,8 @@ int main() {
 
         parseInput(input, args);
 
+        //  capture input here and add to history
+
         handleCommand(args, &cwd, &trimmedCWD);
     }
     free(cwd);

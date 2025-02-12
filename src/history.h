@@ -3,9 +3,9 @@
 
 char* history[500];
 
-void createHistoryDir() {};
-void initHistory() {};
-void writeHistory() {};
-void accessHistory() {};
+void createHistoryDir() {}; // create history in /home/user/cshell_history
+void initHistory() {};  //  read history from file on start
+void writeHistory() {}; //  write history at end of session
+void accessHistory() {}; // handle user up arrow key to history
 
 #endif
