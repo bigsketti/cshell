@@ -98,19 +98,25 @@ void cmd_cd(char **args, char **cwd, char **trimmedCWD) {
 }
 
 void cmd_mkfile(char **args) {
+    if (args[1] == NULL) {
+        fprintf(stderr, "Error, no file name provided.\n");
+    } 
+
     FILE *file = fopen(args[1], "w");
-        if (file == NULL) {
-            perror("Error making file");
-        } else {
-            printf("success\n");
-        }
+    if (file == NULL) {
+        perror("Error making file");
+        return;
+    }
+
+    printf("File made successfully: %s\n", args[1]);
+    fclose(file);
 }
 
 void cmd_mkdir(char **args) {
     if (mkdir(args[1], 0777) != 0) {
         perror("Error making directory");
     } else {
-        printf("success\n");
+        printf("Directory made successfully: %s\n", args[1]);
     }
 }
 
@@ -118,7 +124,7 @@ void cmd_rmfile(char **args) {
     if (remove(args[1]) != 0) {
         perror("Error removing file");
     } else {
-        printf("success\n");
+        printf("File removed successfully: %s\n", args[1]);
     }
 }
 
@@ -126,7 +132,7 @@ void cmd_rmdir(char **args) {
     if (rmdir(args[1]) != 0) {
         perror("Error removing directory");
     } else {
-        printf("success\n");
+        printf("Directory removed successfully: %s\n", args[1]);
     }
 }
 
@@ -136,22 +142,29 @@ void cmd_ls(char **args) {
 }
 
 void cmd_mode(char **args) {
-    if (strcmp("-h", args[1]) == 0) {
-        printf("\033[32m");
-        printf("Hacker mode activated\n");
-        return;
-    } else if (strcmp("-e", args[1]) == 0) {
-        printf("\033[31m");
-        printf("Evil mode activated\n");
-        return;
-    } else if (strcmp("-n", args[1]) == 0) {
-        printf("\033[0m");
-        printf("Normal mode activated\n");
-        return;
-    } else {
-        printf("Invalid arguement, type \"help\" for help\n");
-        return;
+    if (args[1] == NULL) {
+        printf("Invalid arguement, type \"help\" for help");
     }
+
+    struct {
+        char *flag;
+        char *color;
+        char *message;
+    } modes[] = {
+        {"-e", "\033[31m", "Evil mode activated\n"},
+        {"-h", "\033[32m", "Hacker mode activated\n"},
+        {"-n", "\033[0m", "Normal mode activated\n"},
+        {NULL, NULL, NULL}
+    };
+
+    for (int i = 0; modes[i].flag != NULL; i++) {
+        if(strcmp(modes[i].flag, args[1]) == 0) {
+            printf("%s%s\n", modes[i].color, modes[i].message);
+            return;
+        }
+    }
+
+    printf("Invalid arguement, type \"help\" for help\n");
 }
 
 void printClamShell() {
